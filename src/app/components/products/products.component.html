@@ -1,0 +1,102 @@
+<div class="container mx-auto mt-8">
+  <div class="flex justify-between mb-12">
+    <h2 class="text-2xl font-bold mb-4">Products</h2>
+
+    <p-button
+      label="Add New Product"
+      icon="pi pi-plus"
+      class="p-button-success"
+      (click)="goToAddProduct()"
+    ></p-button>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <div class="relative mb-4 w-1/3">
+      <i
+        class="pi pi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+      ></i>
+      <input
+        type="text"
+        (input)="onGlobalSearch($event)"
+        placeholder="Search by name"
+        class="w-full pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    <div *ngIf="products.length > 1" class="mb-4 w-[250px]">
+      <p-slider
+        [(ngModel)]="priceRange"
+        [min]="minPrice"
+        [max]="maxPrice"
+        [range]="true"
+        (onChange)="onPriceRangeChange()"
+      ></p-slider>
+      <label class="text-sm ml-2 flex justify-between">
+        <span>Price: {{ priceRange[0] }}</span>
+        <span>{{ priceRange[1] }}</span>
+      </label>
+    </div>
+  </div>
+
+  <p-table
+    [value]="products"
+    [filters]="filters"
+    [paginator]="true"
+    [rows]="10"
+    [globalFilterFields]="['name']"
+    [responsiveLayout]="'scroll'"
+    [resizableColumns]="true"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [scrollable]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+        <th pSortableColumn="name">
+          Name <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="description">
+          Description <p-sortIcon field="description"></p-sortIcon>
+        </th>
+        <th pSortableColumn="price">
+          Price <p-sortIcon field="price"></p-sortIcon>
+        </th>
+        <th pSortableColumn="createdDate">
+          Created Date <p-sortIcon field="createdDate"></p-sortIcon>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>{{ product.id }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.price | currency }}</td>
+        <td>{{ product.createdDate | date }}</td>
+        <td>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-info me-3"
+            (click)="navigateToUpdate(product.id)"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-trash"
+            class="p-button-danger"
+            (click)="confirmDelete(product)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
